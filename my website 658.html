@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Hacker System</title>
+
+<style>
+body {
+    margin:0;
+    background:black;
+    color:#0f0;
+    font-family:monospace;
+}
+
+/* MATRIX */
+canvas {
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:-1;
+}
+
+/* LOGIN */
+#login {
+    text-align:center;
+    margin-top:20%;
+}
+
+input, button {
+    padding:10px;
+    margin-top:10px;
+    background:black;
+    border:1px solid #0f0;
+    color:#0f0;
+}
+
+#main {
+    display:none;
+    padding:20px;
+}
+
+#terminal {
+    border:1px solid #0f0;
+    padding:20px;
+    height:300px;
+    overflow:auto;
+}
+</style>
+
+</head>
+
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div id="login">
+    <h2 id="typing"></h2>
+    <input type="password" id="pass" placeholder="Enter Password">
+    <br>
+    <button onclick="login()">ENTER</button>
+    <p id="msg"></p>
+</div>
+
+<div id="main">
+    <h1>HACKER TERMINAL</h1>
+    <div id="terminal"></div>
+    <input id="cmd" placeholder="Type command..." onkeydown="run(event)">
+</div>
+
+<audio id="sound" src="https://www.fesliyanstudios.com/play-mp3/387"></audio>
+
+<script>
+// TYPING
+let text="ACCESS TERMINAL...";
+let i=0;
+function type(){
+    if(i<text.length){
+        document.getElementById("typing").innerHTML+=text.charAt(i);
+        i++;
+        setTimeout(type,50);
+    }
+}
+type();
+
+// LOGIN
+function login(){
+    let p=document.getElementById("pass").value;
+    if(p==="admin123"){
+        document.getElementById("login").style.display="none";
+        document.getElementById("main").style.display="block";
+        document.getElementById("sound").play();
+    } else {
+        document.getElementById("msg").innerText="ACCESS DENIED";
+        document.getElementById("msg").style.color="red";
+    }
+}
+
+// TERMINAL
+function run(e){
+    if(e.key==="Enter"){
+        let val=cmd.value;
+        terminal.innerHTML+="<p>> "+val+"</p>";
+        cmd.value="";
+    }
+}
+
+// MATRIX
+let canvas=document.getElementById("matrix");
+let ctx=canvas.getContext("2d");
+
+canvas.height=window.innerHeight;
+canvas.width=window.innerWidth;
+
+let letters="01";
+letters=letters.split("");
+
+let fontSize=14;
+let columns=canvas.width/fontSize;
+
+let drops=[];
+for(let x=0;x<columns;x++) drops[x]=1;
+
+function draw(){
+    ctx.fillStyle="rgba(0,0,0,0.05)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    ctx.fillStyle="#0f0";
+    ctx.font=fontSize+"px monospace";
+
+    for(let i=0;i<drops.length;i++){
+        let text=letters[Math.floor(Math.random()*letters.length)];
+        ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+
+        if(drops[i]*fontSize>canvas.height) drops[i]=0;
+        drops[i]++;
+    }
+}
+setInterval(draw,33);
+</script>
+
+</body>
+</html>
